@@ -43,7 +43,7 @@ function Checkout() {
 
   if (lines.length === 0)
     return (
-      <Page title="Checkout">
+      <Page title="Checkout" back={{ fallback: "/cart", label: "Back to cart" }}>
         <p className="mb-4 text-muted-foreground" data-testid="checkout-empty">Your cart is empty.</p>
         <Link to="/products" className="btn-primary">Browse products</Link>
       </Page>
@@ -58,7 +58,7 @@ function Checkout() {
   );
 
   return (
-    <Page title="Checkout">
+    <Page title="Checkout" back={{ fallback: "/cart", label: "Back to cart" }}>
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <form
           id="checkout-form"
