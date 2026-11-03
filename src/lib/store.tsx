@@ -47,7 +47,7 @@ const load = <T,>(k: string, d: T): T => {
 
 type SbUser = { email?: string | null | undefined; user_metadata?: Record<string, unknown> } | null | undefined;
 const toUser = (u: SbUser): User | null =>
-  u ? { email: u.email ?? "", name: (u.user_metadata?.["name"] as string) || (u.email ?? "").split("@")[0] } : null;
+  u ? { email: u.email ?? "", name: String(u.user_metadata?.["name"] || (u.email ?? "").split("@")[0] || "") } : null;
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
