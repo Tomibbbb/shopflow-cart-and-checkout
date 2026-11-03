@@ -24,7 +24,7 @@ export function Header() {
           {user ? (
             <div className="hidden items-center gap-3 sm:flex">
               <span className="text-sm text-muted-foreground" data-testid="user-greeting">Hi, {user.name}</span>
-              <button className="btn-ghost" data-testid="logout-button" onClick={() => { logout(); navigate({ to: "/" }); }}>Log out</button>
+              <button className="btn-ghost" data-testid="logout-button" onClick={logout}>Log out</button>
             </div>
           ) : (
             <Link to="/login" className="btn-ghost hidden sm:inline-flex" data-testid="nav-login">Sign in</Link>

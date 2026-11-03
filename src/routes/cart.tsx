@@ -20,7 +20,7 @@ function Cart() {
   const { lines, subtotal, setQty, remove } = useStore();
   if (lines.length === 0)
     return (
-      <Page title="Shopping cart">
+      <Page title="Shopping cart" back={{ fallback: "/products", label: "Continue shopping" }}>
         <div className="rounded-2xl border border-dashed border-border p-12 text-center" data-testid="empty-cart">
           <p className="mb-4 text-muted-foreground">Your cart is empty.</p>
           <Link to="/products" className="btn-primary">Continue shopping</Link>
@@ -28,7 +28,7 @@ function Cart() {
       </Page>
     );
   return (
-    <Page title="Shopping cart">
+    <Page title="Shopping cart" back={{ fallback: "/products", label: "Continue shopping" }}>
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <ul className="divide-y divide-border rounded-2xl border border-border">
           {lines.map(({ product, qty }) => (
