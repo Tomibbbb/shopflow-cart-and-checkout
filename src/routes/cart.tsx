@@ -42,11 +42,11 @@ function Cart() {
                 <div className="flex items-center gap-4">
                   <div className="qty">
                     <button aria-label="Decrease quantity" data-testid="qty-decrease" onClick={() => setQty(product.id, qty - 1)}>−</button>
-                    <span data-testid="item-qty">{qty}</span>
+                    <span data-testid="cart-quantity" aria-live="polite">{qty}</span>
                     <button aria-label="Increase quantity" data-testid="qty-increase" onClick={() => setQty(product.id, qty + 1)}>+</button>
                   </div>
                   <span className="w-20 text-right font-bold" data-testid="item-total">{formatPrice(product.price * qty)}</span>
-                  <button className="text-sm text-destructive hover:underline" data-testid="remove-item" onClick={() => remove(product.id)}>Remove</button>
+                  <button className="text-sm text-destructive hover:underline" data-testid="cart-remove" aria-label={`Remove ${product.name}`} onClick={() => remove(product.id)}>Remove</button>
                 </div>
               </div>
             </li>

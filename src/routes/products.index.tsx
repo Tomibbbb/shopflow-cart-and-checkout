@@ -36,7 +36,7 @@ function Products() {
           onChange={(e) => set({ q: e.target.value || undefined })}
           placeholder="Search products…"
           className="input md:max-w-sm"
-          data-testid="search-input"
+          data-testid="product-search"
           aria-label="Search products"
         />
         <div className="flex flex-wrap gap-2" role="group" aria-label="Category filter">

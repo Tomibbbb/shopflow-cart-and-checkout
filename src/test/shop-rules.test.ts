@@ -9,3 +9,10 @@ describe("shop rules", () => {
   it("filters by category", () => expect(filterProducts("", "beauty")).toHaveLength(3));
   it("searches by name", () => expect(filterProducts("sneakers", "all").map((p) => p.id)).toEqual(["court-sneakers"]));
 });
+
+import { PRODUCTS as __P } from "@/lib/products";
+describe("stable product IDs for e2e", () => {
+  it("keeps the 12 product IDs fixed", () => {
+    expect(__P.map((p) => p.id)).toEqual(["aurora-headphones","pulse-smartwatch","echo-mini-speaker","classic-denim-jacket","court-sneakers","saddle-crossbody","radiant-serum","velora-parfum","matte-lipstick-trio","ceramic-table-lamp","linen-oak-candle","chunky-knit-throw"]);
+  });
+});

@@ -19,7 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
           <span className="text-lg font-bold" data-testid="product-price">{formatPrice(product.price)}</span>
           <button
             className="btn-primary btn-sm"
-            data-testid="add-to-cart"
+            data-testid="add-to-cart" data-product-id={product.id}
             onClick={() => { add(product.id); setAdded(true); setTimeout(() => setAdded(false), 1200); }}
           >
             {added ? "Added ✓" : "Add to cart"}
