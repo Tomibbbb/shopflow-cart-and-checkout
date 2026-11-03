@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { BackButton } from "@/components/Layout";
 
 export const Route = createFileRoute("/register")({
   head: () => ({
