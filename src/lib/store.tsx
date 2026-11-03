@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { getProduct, type Product } from "./products";
 
 export interface CartItem { id: string; qty: number }
@@ -13,6 +14,8 @@ export interface Order {
   date: string;
 }
 
+export type AuthResult = { error: string | null; needsConfirmation?: boolean };
+
 interface Store {
   cart: CartItem[];
   lines: { product: Product; qty: number }[];
@@ -23,9 +26,10 @@ interface Store {
   remove: (id: string) => void;
   clear: () => void;
   user: User | null;
-  register: (name: string, email: string, password: string) => string | null;
-  login: (email: string, password: string) => string | null;
-  logout: () => void;
+  authReady: boolean;
+  register: (name: string, email: string, password: string) => Promise<AuthResult>;
+  login: (email: string, password: string) => Promise<AuthResult>;
+  logout: () => Promise<void>;
   lastOrder: Order | null;
   placeOrder: (o: Omit<Order, "id" | "items" | "total" | "date">, total: number) => Order;
 }
@@ -41,20 +45,28 @@ const load = <T,>(k: string, d: T): T => {
   }
 };
 
+type SbUser = { email?: string | null; user_metadata?: Record<string, unknown> } | null | undefined;
+const toUser = (u: SbUser): User | null =>
+  u ? { email: u.email ?? "", name: (u.user_metadata?.["name"] as string) || (u.email ?? "").split("@")[0] } : null;
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [user, setUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setCart(load("sf_cart", []));
-    setUser(load("sf_user", null));
     setLastOrder(load("sf_last_order", null));
+    localStorage.removeItem("sf_users"); // legacy insecure storage
+    localStorage.removeItem("sf_user");
     setReady(true);
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => setUser(toUser(session?.user)));
+    supabase.auth.getUser().then(({ data }) => { setUser(toUser(data.user)); setAuthReady(true); });
+    return () => sub.subscription.unsubscribe();
   }, []);
   useEffect(() => { if (ready) localStorage.setItem("sf_cart", JSON.stringify(cart)); }, [cart, ready]);
-  useEffect(() => { if (ready) localStorage.setItem("sf_user", JSON.stringify(user)); }, [user, ready]);
 
   const lines = cart.flatMap((c) => {
     const product = getProduct(c.id);
@@ -74,23 +86,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     remove: (id) => setCart((c) => c.filter((i) => i.id !== id)),
     clear: () => setCart([]),
     user,
-    register: (name, email, password) => {
-      const users = load<Record<string, { name: string; password: string }>>("sf_users", {});
-      const key = email.toLowerCase();
-      if (users[key]) return "An account with this email already exists";
-      users[key] = { name, password };
-      localStorage.setItem("sf_users", JSON.stringify(users));
-      setUser({ name, email: key });
-      return null;
+    authReady,
+    register: async (name, email, password) => {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: { emailRedirectTo: window.location.origin, data: { name } },
+      });
+      if (error) return { error: error.message };
+      if (data.user && data.user.identities?.length === 0) return { error: "An account with this email already exists" };
+      return { error: null, needsConfirmation: !data.session };
     },
-    login: (email, password) => {
-      const users = load<Record<string, { name: string; password: string }>>("sf_users", {});
-      const u = users[email.toLowerCase()];
-      if (!u || u.password !== password) return "Invalid email or password";
-      setUser({ name: u.name, email: email.toLowerCase() });
-      return null;
+    login: async (email, password) => {
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+      if (error) return { error: error.message === "Invalid login credentials" ? "Invalid email or password" : error.message };
+      return { error: null };
     },
-    logout: () => setUser(null),
+    logout: async () => { await supabase.auth.signOut(); setUser(null); },
     lastOrder,
     placeOrder: (o, total) => {
       const order: Order = { ...o, id: "SF-" + Math.floor(100000 + Math.random() * 900000), items: lines, total, date: new Date().toISOString() };

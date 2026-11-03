@@ -1,11 +1,12 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { useStore } from "@/lib/store";
 
 export function Header() {
-  const { count, user, logout } = useStore();
+  const { count, user, logout: doLogout } = useStore();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const logout = async () => { await doLogout(); navigate({ to: "/", replace: true }); };
   const nav = (
     <>
       <Link to="/" className="nav-link" activeProps={{ className: "nav-link-active" }} activeOptions={{ exact: true }} data-testid="nav-home">Home</Link>
@@ -60,9 +61,25 @@ export function Footer() {
   );
 }
 
-export function Page({ title, children }: { title?: string; children: ReactNode }) {
+export function BackButton({ fallback = "/products", label = "Back" }: { fallback?: "/" | "/products" | "/cart"; label?: string }) {
+  const router = useRouter();
+  const navigate = useNavigate();
+  return (
+    <button
+      type="button"
+      data-testid="back-button"
+      className="mb-6 inline-block text-sm text-muted-foreground hover:text-primary"
+      onClick={() => (window.history.length > 1 ? router.history.back() : navigate({ to: fallback }))}
+    >
+      ← {label}
+    </button>
+  );
+}
+
+export function Page({ title, back, children }: { title?: string; back?: { fallback?: "/" | "/products" | "/cart"; label?: string }; children: ReactNode }) {
   return (
     <main className="container-page py-10">
+      {back && <div><BackButton {...back} /></div>}
       {title && <h1 className="mb-8 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{title}</h1>}
       {children}
     </main>
