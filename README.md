@@ -1,48 +1,100 @@
-# Shopflow Cart And Checkout
+# ShopFlow — Playwright QA Automation Project
 
-Build a modern, responsive e-commerce website called ShopFlow using React, TypeScript and Tailwind CSS.
+## About the Project
 
-The website should have a clean, professional design with white backgrounds, purple accents, attractive product cards and easy navigation.
+I created this project to practise and demonstrate my QA automation skills using Playwright and TypeScript.
 
-Create these pages:
+ShopFlow is a demo e-commerce website built with Lovable. I use it to test common shopping journeys, from registering and logging in to searching for products, managing a shopping cart and completing checkout.
 
-- Home
+**Website:** https://shopflow-cart-and-checkout.lovable.app/
 
-- Products
+## Tools Used
 
-- Product Details
+- Playwright
+- TypeScript
+- Node.js
+- VS Code
+- Git and GitHub
 
-- Login and Registration
+The tests run in Chromium, Firefox and WebKit.
 
-- Shopping Cart
+## What I've Automated
 
-- Checkout
+I've written 13 automated tests covering the main shopping features.
 
-- Order Confirmation
+| Area | What's Tested |
+|---|---|
+| Registration and Login | Successful registration, valid login, incorrect password and empty login fields |
+| Products | Searching for a product and filtering by category |
+| Shopping Cart | Adding products, changing quantities and removing products |
+| Checkout | Completing a simulated purchase and checking the order confirmation |
 
-Add 12 realistic demo products across electronics, fashion, beauty and home accessories, with product images, names, prices and descriptions.
+## Test Results
 
-Implement product search, category filtering, adding and removing cart items, quantity updates and a simulated checkout without real payments.
+The latest full test run passed across all three browsers.
 
-Make the website responsive and ensure the main shopping features work. This is a demo application for a QA automation portfolio.
+| Browser | Passed |
+|---|---|
+| Chromium | 13 |
+| Firefox | 13 |
+| WebKit | 13 |
+| **Total** | **39** |
 
-This project was built with [Lovable](https://lovable.dev).
+## Test Execution and Debugging
 
-## Build with Lovable
+I used Playwright's HTML reports and trace viewer to review test results and investigate failures during development.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/18c2655e-1038-4a9f-bb10-6d5ae74d94db).
+I also ran tests multiple times across different browsers to check consistency and identify areas where test reliability could be improved.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+My latest full execution completed successfully, with all 39 test executions passing across Chromium, Firefox and WebKit.
 
-## Development
+## How to Run the Tests
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+### 1. Install Dependencies
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+```bash
+npm install
+npx playwright install
 ```
+
+### 2. Set Up Test Credentials
+
+Create a `.env` file in the project folder and add:
+
+```env
+SHOPFLOW_TEST_EMAIL=your-test-email@example.com
+SHOPFLOW_TEST_PASSWORD=your-test-password
+```
+
+Use a dedicated test account. The `.env` file should not be committed to GitHub.
+
+### 3. Run All Tests
+
+```bash
+npx playwright test
+```
+
+### 4. Run Tests in One Browser
+
+```bash
+npx playwright test --project=chromium
+```
+
+### 5. View the Test Report
+
+```bash
+npx playwright show-report
+```
+
+## What I Plan to Improve
+
+- Add more negative test scenarios
+- Improve test reliability
+- Set up GitHub Actions to run tests automatically
+- Continue expanding checkout and cart test coverage
+
+## About ShopFlow
+
+The ShopFlow application was built using [Lovable](https://lovable.dev) with React, TypeScript and Tailwind CSS.
+
+The website uses demo products and a simulated checkout, so no real payments are processed.
