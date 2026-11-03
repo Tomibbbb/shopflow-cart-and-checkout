@@ -3,12 +3,12 @@ import { ProductCard } from "@/components/ProductCard";
 import { Page } from "@/components/Layout";
 import { CATEGORIES, filterProducts, type Category } from "@/lib/products";
 
-type Search = { q?: string; category?: Category | "all" };
+type Search = { q?: string | undefined; category?: Category | "all" | undefined };
 
 export const Route = createFileRoute("/products/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    q: typeof s.q === "string" && s.q ? s.q : undefined,
-    category: CATEGORIES.some((c) => c.id === s.category) ? (s.category as Category) : undefined,
+    q: typeof s["q"] === "string" && s["q"] ? s["q"] : undefined,
+    category: CATEGORIES.some((c) => c.id === s["category"]) ? (s["category"] as Category) : undefined,
   }),
   head: () => ({
     meta: [
