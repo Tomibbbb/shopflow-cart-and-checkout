@@ -52,8 +52,8 @@ function Checkout() {
   const field = (k: keyof typeof empty, label: string, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
     <label className="field">
       {label}
-      <input className="input" value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} data-testid={`checkout-${k}`} aria-invalid={!!errors[k]} {...props} />
-      {errors[k] && <span className="text-xs text-destructive" data-testid={`error-${k}`}>{errors[k]}</span>}
+      <input className="input" value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} data-testid={`checkout-${k}`} aria-invalid={!!errors[k]} aria-describedby={errors[k] ? `error-${k}` : undefined} {...props} />
+      {errors[k] && <span id={`error-${k}`} role="alert" className="text-xs text-destructive" data-testid={`error-${k}`}>{errors[k]}</span>}
     </label>
   );
 
@@ -93,7 +93,7 @@ function Checkout() {
           </fieldset>
         </form>
         <Summary subtotal={subtotal}>
-          <button type="submit" form="checkout-form" className="btn-primary btn-lg w-full" disabled={busy} data-testid="place-order">
+          <button type="submit" form="checkout-form" className="btn-primary btn-lg w-full" disabled={busy} data-testid="checkout-submit">
             {busy ? "Processing…" : "Place order"}
           </button>
         </Summary>
